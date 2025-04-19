@@ -69,7 +69,8 @@ def main():
 
     
     print(f"******************* TRAINING STARTED *******************")
-    checkpoint_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'checkpoints')
+    checkpoint_dir = "/content/drive/MyDrive/Intro to Deep Learning 18-786/final project/checkpoints"
+
     
     num_epochs = 5  # Change as needed.
     for epoch in range(num_epochs):
