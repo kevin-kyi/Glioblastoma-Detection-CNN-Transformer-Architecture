@@ -45,8 +45,7 @@ def collate_fn(batch):
 
 def main():
     # Construct the path relative to this file.
-    train_data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                   '..', 'data', 'BraTS2025-GLI-PRE-Challenge-TrainingData')
+    train_data_path = "/content/drive/MyDrive/Intro to Deep Learning 18-786/final project/data/BraTS2025-GLI-PRE-Challenge-TrainingData"
     print(f"******************* Starting Sampling *******************")
     dataset = BraTSSliceDataset(train_data_path,
                                 modalities=['t1c', 't1n', 't2f', 't2w'],
