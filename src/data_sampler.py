@@ -137,10 +137,8 @@ class SimpleAugment(object):
 
 if __name__ == '__main__':
     # Construct path relative to the current file's directory.
-    train_data_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)),
-        '..', 'data', 'BraTS2025-GLI-PRE-Challenge-TrainingData'
-    )
+    train_data_path = "/content/drive/MyDrive/Intro to Deep Learning 18-786/final project/data/BraTS2025-GLI-PRE-Challenge-TrainingData"
+
     dataset = BraTSSliceDataset(train_data_path, transform=None)
     print("Total slices sampled:", len(dataset))
     
