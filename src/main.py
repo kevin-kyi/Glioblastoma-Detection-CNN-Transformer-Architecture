@@ -50,6 +50,7 @@ def collate_fn(batch):
 def main():
     # Construct the path relative to this file.
     train_data_path = "/content/drive/MyDrive/final-project/data/BraTS2025-GLI-PRE-Challenge-TrainingData"
+
     print(f"******************* Starting Sampling *******************")
     dataset = BraTSSliceDataset(train_data_path,
                                 modalities=['t1c', 't1n', 't2f', 't2w'],
@@ -106,6 +107,7 @@ def main():
         encoders[mod].to(device)
         encoders[mod].eval()
     transformer_dir = "/content/drive/MyDrive/Glioblastoma-Detection-CNN-Transformer-Architecture/transformer"
+
     
     # Train the transformer
     transformer = FusionTransformer(feature_dim=1280, num_layers=6, num_heads=8, num_classes=1).to(device)
