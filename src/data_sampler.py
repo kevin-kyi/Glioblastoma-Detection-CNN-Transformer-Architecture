@@ -160,3 +160,41 @@ if __name__ == '__main__':
     plt.title("Enhancing Tumor Mask")
     plt.axis('off')
     plt.show()
+
+
+
+# 
+def _get_subject_samples(self, subject_path):
+    """
+    Each subject is a 3D volume. We stop once we've collected up to 30 tumor slices
+    and up to 30 healthy slices, to save compute.
+    """
+    # locate segmentation file
+    files = os.listdir(subject_path)
+    seg_file = next((os.path.join(subject_path, f)
+                     for f in files if 'seg' in f.lower() and f.endswith('.nii.gz')), None)
+    if seg_file is None:
+        raise ValueError(f"Segmentation file not found in {subject_path}")
+
+    seg_data = nib.load(seg_file).get_fdata()
+    num_slices = seg_data.shape[2]
+
+    positive_slices = []
+    negative_slices = []
+
+    for i in range(num_slices):
+        seg_slice = seg_data[:, :, i]
+        if np.any(seg_slice == self.positive_label):
+            if len(positive_slices) < 5:
+                positive_slices.append(i)
+        else:
+            if len(negative_slices) < 5:
+                negative_slices.append(i)
+        # break if both lists are full
+        if len(positive_slices) >= 5 and len(negative_slices) >= 5:
+            break
+
+    # Build sample tuples
+    subject_samples = [(subject_path, i, True)  for i in positive_slices] + \
+                      [(subject_path, i, False) for i in negative_slices]
+    return subject_samples
