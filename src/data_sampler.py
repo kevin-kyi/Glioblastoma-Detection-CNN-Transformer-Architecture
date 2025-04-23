@@ -181,7 +181,7 @@ if __name__ == '__main__':
     
     # Visualize one sample for testing.
     import matplotlib.pyplot as plt
-    sample = dataset[3]
+    sample = dataset[0]
     # sample = dataset[4]
 
     modalities = sample['image']
