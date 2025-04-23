@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from data_sampler import BraTSSliceDataset, SimpleAugment
-from encoder import ModalityEncoder
+from old_testing.encoder import ModalityEncoder
 
 import time
 
