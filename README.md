@@ -19,6 +19,5 @@ We use the [BraTS 2025 Challenge data on Synapse](https://www.synapse.org/Synaps
 
 ## Repository Structure & Storage Note
 - **Due to GitHub storage limits**, we **do not** include the raw MRI data or any pretrained `.pth` files in this repo.  
-- Once you’ve downloaded the BraTS data, you can launch training with:
-  ```bash
-  python train_main.py --data-dir /path/to/BraTS-GLI-XXXX-XXX
+- Once you’ve downloaded the BraTS data, you can launch training using visualize_stack_slices.py
+![Test Image 1](https://github.com/kevin-kyi/Glioblastoma-Detection-UNET-Transformer-Architecture/blob/main/results/back_view.jpg)
