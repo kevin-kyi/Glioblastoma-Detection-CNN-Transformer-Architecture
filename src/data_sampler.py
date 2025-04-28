@@ -20,8 +20,12 @@ class BraTSSliceDataset(Dataset):
 
 
         # THIS IS FOR CREATING A SUBSET OF THE DATASET
-        # self.subject_dirs = self.subject_dirs[4:10]
-        self.subject_dirs = self.subject_dirs[0:10]
+        # self.subject_dirs = ["data/BraTS2025-GLI-PRE-Challenge-TrainingData/BraTS-GLI-00009-000"]
+        # self.subject_dirs = ["../drive/My Drive/Deep Learning Final Project/final-project/data/BraTS2025-GLI-PRE-Challenge-TrainingData/BraTS-GLI-00009-000"]
+
+
+
+        print(self.subject_dirs)
 
         print(f"# of Subject Dirs: {len(self.subject_dirs)}")
         
@@ -33,17 +37,10 @@ class BraTSSliceDataset(Dataset):
             print("***************************************")
             subject_samples = self._get_subject_samples(subject_path)
             self.samples.extend(subject_samples)
-
-        self.samples = [self.samples[4]]
-
         print(f"Total samples in dataset: {len(self.samples)}")
 
 
     def _get_subject_samples(self, subject_path):
-        """
-        Deterministically pair each new positive slice with the next healthy slice,
-        up to sliceLimit of each.
-        """
         # locate segmentation
         files    = os.listdir(subject_path)
         seg_file = next((f for f in files if 'seg' in f.lower() and f.endswith('.nii.gz')), None)
@@ -52,21 +49,18 @@ class BraTSSliceDataset(Dataset):
         seg_data = nib.load(os.path.join(subject_path, seg_file)).get_fdata()
         num_slices = seg_data.shape[2]
 
-        sliceLimit = 5
+        sliceLimit = 15
         pos_idxs, neg_idxs = [], []
 
         for i in range(num_slices):
-            # stop early if we've got enough
             if len(pos_idxs) >= sliceLimit and len(neg_idxs) >= sliceLimit:
                 break
 
             has_tumor = np.any(seg_data[:, :, i] == self.positive_label)
 
-            # 1) if a new tumor slice
             if has_tumor and len(pos_idxs) < sliceLimit:
                 pos_idxs.append(i)
 
-                # 2) find the very next healthy slice
                 for j in range(i+1, num_slices):
                     if not np.any(seg_data[:, :, j] == self.positive_label):
                         if len(neg_idxs) < sliceLimit:
@@ -78,6 +72,9 @@ class BraTSSliceDataset(Dataset):
             [(subject_path, idx, True)  for idx in pos_idxs] +
             [(subject_path, idx, False) for idx in neg_idxs]
         )
+        # samples = (
+        #     [(subject_path, idx, True)  for idx in pos_idxs]
+        # )
         return samples
 
 
@@ -97,15 +94,8 @@ class BraTSSliceDataset(Dataset):
         return len(self.samples)
 
     def __getitem__(self, idx):
-        """
-        Returns a sample with:
-            'image': a list of 2D arrays (one for each modality)
-            'seg': a 2D binary mask indicating the enhancing tumor regions
-        """
         # print(f"Get_Item of Index: {idx}")
         subject_path, slice_index, is_positive = self.samples[idx]
-
-        # Load each modality slice.
         images = []
         for mod in self.modalities:
             mod_data = self._load_modality_image(subject_path, mod)
@@ -121,7 +111,6 @@ class BraTSSliceDataset(Dataset):
             images.append(img)
 
 
-        # Load segmentation slice and create a binary mask for the enhancing tumor.
         files = os.listdir(subject_path)
         seg_file = None
         for f in files:
@@ -151,18 +140,16 @@ class SimpleAugment(object):
             images = [np.flipud(im).copy() for im in images]
             seg    = np.flipud(seg).copy()
         
-        # 4) Random intensity scaling (brightness)
         scale = random.uniform(0.9, 1.1)
         images = [im * scale for im in images]
         
-        # 5) Add small Gaussian noise
         noise_sigma = 0.01
         noise = np.random.normal(0, noise_sigma, size=images[0].shape)
         images = [im + noise for im in images]
 
         # Make sure we stay float32
         sample['image'] = [im.astype(np.float32) for im in images]
-        sample['seg']   = seg             # segmentation is binary, no change
+        sample['seg']   = seg             
         
         return sample
 

@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from data_sampler import BraTSSliceDataset, SimpleAugment
-from old_testing.encoder import ModalityEncoder
+from midterm_sampling.encoder import ModalityEncoder
 
 import time
 
@@ -47,7 +47,8 @@ def collate_fn(batch):
 
 def main():
     # Construct the path relative to this file.
-    train_data_path = "/content/drive/MyDrive/Intro to Deep Learning 18-786/final project/data/BraTS2025-GLI-PRE-Challenge-TrainingData"
+    train_data_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                   '..', 'data', 'BraTS2025-GLI-PRE-Challenge-TrainingData')
     print(f"******************* Starting Sampling *******************")
     dataset = BraTSSliceDataset(train_data_path,
                                 modalities=['t1c', 't1n', 't2f', 't2w'],
@@ -137,30 +138,11 @@ def main():
     #             losses[mod] = loss.item()
     #         print(f"Epoch {epoch+1}, Losses: {losses}")
 
-    
-    print(f"******************* TRAINING STARTED *******************")
-    checkpoint_dir = "/content/drive/MyDrive/Intro to Deep Learning 18-786/final project/checkpoints"
+    #         end = time.time()
 
-    
-    num_epochs = 5  # Change as needed.
-    for epoch in range(num_epochs):
-        for batch in dataloader:
-            imgs = batch['image']  # List of 4 tensors, one per modality: (B, 3, H, W)
-            segs = batch['seg'].to(device)  # (B, 1, H, W)
-            losses = {}
-            # Train each modality's encoder separately.
-            for i, mod in enumerate(modality_names):
-                inputs = imgs[i].to(device)
-                outputs, features = encoders[mod](inputs)
-                # Upsample outputs if necessary.
-                if outputs.shape[-2:] != segs.shape[-2:]:
-                    outputs = nn.functional.interpolate(outputs, size=segs.shape[-2:], mode='bilinear', align_corners=False)
-                loss = criterion(outputs, segs)
-                optimizers[mod].zero_grad()
-                loss.backward()
-                optimizers[mod].step()
-                losses[mod] = loss.item()
-            print(f"Epoch {epoch+1}, Losses: {losses}")
+    #         totalTime = end - start
+    #         print(f"Execution time: {totalTime}")
+        
 
     #     save_checkpoints(epoch, encoders, checkpoint_dir)
     #     print(f"Saved State Dict for Epoch {epoch} in /checkpoints folder")

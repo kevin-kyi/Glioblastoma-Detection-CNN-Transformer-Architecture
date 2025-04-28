@@ -45,7 +45,7 @@ class UNetDecoder(nn.Module):
         )
 
     def forward(self, features):
-        feats = features[::-1]  # Reverse for decoder
+        feats = features[::-1]  
         x = feats[0]
         
         for i, (up, conv) in enumerate(zip(self.ups, self.convs)):
@@ -66,7 +66,6 @@ class MultiModalSegModel(nn.Module):
         self.encoders = nn.ModuleDict()
         self.decoders = nn.ModuleDict()
         for mod in ['t1c','t1n','t2f','t2w']:
-            # in_chans=1 for single‐channel input
             backbone = timm.create_model(encoder_name,
                                          pretrained=pretrained,
                                          features_only=True,
