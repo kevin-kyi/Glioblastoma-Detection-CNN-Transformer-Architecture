@@ -19,7 +19,7 @@ We use the [BraTS 2025 Challenge data on Synapse](https://www.synapse.org/Synaps
 
 ## Repository Structure & Storage Note
 - **Due to GitHub storage limits**, we **do not** include the raw MRI data or any pretrained `.pth` files in this repo.  
-- Once you’ve downloaded the BraTS data, you can launch training using visualize_stack_slices.py
+- Once you’ve downloaded the BraTS data, you can launch training using visualize_stack_slices.py.
 Below are a couple visualizations of predicted enhancing tumor regions (right) and their corresponding ground truth segmentation mask + full MRI brain overlay (left)
 
 ![Test Image 1](https://github.com/kevin-kyi/Glioblastoma-Detection-UNET-Transformer-Architecture/blob/main/results/back_view.jpg)
